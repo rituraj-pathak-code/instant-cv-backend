@@ -29,16 +29,15 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, sameSite: 'lax' }
+  cookie: { secure: false, sameSite: 'lax', maxAge: 30 * 60 * 1000  }
 }))
-
 app.use(passport.initialize())
 app.use(passport.session())
 
 
 
 app.use('/',authRoutes)
-app.use('/api',resumeBuilderRoutes)
+app.use('/api',isAuthenticated,resumeBuilderRoutes)
 
 
 app.listen(8000, () => {

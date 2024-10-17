@@ -43,7 +43,7 @@ const resumeSchema = new mongoose.Schema({
             skills: { type: [String], required: true }
         }
     ],
-    image: { type: String, required: true }
+    image: { type: String }
 }, { timestamps: true });
 
 const Resume = mongoose.model('Resume',resumeSchema);
