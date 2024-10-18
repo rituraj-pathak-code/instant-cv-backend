@@ -9,6 +9,7 @@ import passport from "passport"
 import session from "express-session"
 import "./auth.js"
 import { isAuthenticated } from "./middlewares/isAuthenticated.js";
+import MongoStore from "connect-mongo";
 
 dotenv.config();
 connectDB();
@@ -29,7 +30,10 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, sameSite: 'lax', maxAge: 30 * 60 * 1000  }
+  cookie: { secure: false, sameSite: 'lax', maxAge: 30 * 60 * 1000  },
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL, 
+  })
 }))
 app.use(passport.initialize())
 app.use(passport.session())
