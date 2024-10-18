@@ -36,7 +36,10 @@ app.use(passport.session())
 
 
 
-app.use('/',authRoutes)
+// app.use('/',(authRoutes))
+app/use('/', (req,res)=>{
+  res.json({message:"Connected YOOO"})
+})
 app.use('/api',isAuthenticated,resumeBuilderRoutes)
 
 
