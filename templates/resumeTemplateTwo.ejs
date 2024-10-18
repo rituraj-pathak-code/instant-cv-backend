@@ -25,14 +25,19 @@ body {
 }
 
 .header {
-    text-align: center;
+   display: flex;
+   justify-content: space-between;
     margin-bottom: 2px;
+}
+.header_personal{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
 }
 
 .name {
     font-size: 2em;
     font-weight: bold;
-    text-align: center;
     margin-bottom: 5px;
 }
 
@@ -42,9 +47,9 @@ body {
 
 .social-links {
     display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: left;
+    gap: 3px;
 }
 
 .social-link {
@@ -60,11 +65,14 @@ body {
 }
 
 .section-title {
-    border-bottom: 1px solid black;
-    padding-bottom: 5px;
-    font-size: 1.2em;
+    padding-inline: 5px;
+    font-size: 1.1em;
     font-weight: bold;
     margin-bottom: 8px;
+    background-color: #0741A1;
+    color: white;
+    width: fit-content;
+    padding-block: 2px
     
 }
 
@@ -156,37 +164,39 @@ body {
     <div class="resume-container">
         <!-- HEADER -->
         <div class="header">
-            <h2 class="name">
-                <%= personalInfo.firstName %> <%= personalInfo.lastName %>
-            </h2>
-            <% if (personalInfo.phone && personalInfo.email) { %>
-                <p class="contact-info">
-                    <%= personalInfo.phone %> / <%= personalInfo.email %>
-                </p>
-            <% } %>
+            <div class="header_personal">
+                <h2 class="name">
+                    <%= personalInfo.firstName %> <%= personalInfo.lastName %>
+                </h2>
+                <% if (personalInfo.phone && personalInfo.email) { %>
+                    <p class="contact-info">
+                        <%= personalInfo.phone %> / <%= personalInfo.email %>
+                    </p>
+                <% } %>
+            </div>
             <div class="social-links" style="margin-top: 8px;">
                 <% if (personalInfo.github) { %>
                     <a href="<%= personalInfo.github %>" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
-                        <span>GITHUB</span>
+                        <span>Github</span>
                     </a>
                 <% } %>
                 <% if (personalInfo.linkedin) { %>
                     <a href="<%= personalInfo.linkedin %>" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
-                        <span>LINKEDIN</span>
+                        <span>Linkedin</span>
                     </a>
                 <% } %>
                 <% if (personalInfo.portfolio) { %>
                     <a href="<%= personalInfo.portfolio %>" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
-                        <span>PORTFOLIO</span>
+                        <span>Portfolio</span>
                     </a>
                 <% } %>
                 <% if (personalInfo.leetcode) { %>
                     <a href="<%= personalInfo.leetcode %>" class="social-link" target="_blank">
                         <i class="fab fa-github"></i>
-                        <span>LEETCODE</span>
+                        <span>Leetcode</span>
                     </a>
                 <% } %>
             </div>

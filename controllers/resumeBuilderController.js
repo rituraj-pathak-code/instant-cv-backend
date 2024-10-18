@@ -9,10 +9,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const postResume = async (req, res) => {
-  const { personalInfo, education, experience, projects, skills } = req.body;
+  const { templateId, personalInfo, education, experience, projects, skills } = req.body;
   try {
+
+    const templateFileName = templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
     const html = await ejs.renderFile(
-      path.join(__dirname, "..", "templates", "resumeTemplate.ejs"),
+      path.join(__dirname, "..", "templates", templateFileName),
       {
         personalInfo,
         education,
@@ -41,6 +43,7 @@ export const postResume = async (req, res) => {
       projects,
       skills,
       image: imageDataUri,
+      templateId
     });
     if (!newResume) {
       return res.status(500).send({ message: "Something went Wrong." });
@@ -164,10 +167,12 @@ export const updateResume = async (req, res) => {
 };
 
 export const downloadResume = async (req, res) => {
-  const { personalInfo, education, experience, projects, skills } = req.body;
+  const { personalInfo, education, experience, projects, skills, templateId } = req.body;
+
+  const templateFileName = templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
 
   const html = await ejs.renderFile(
-    path.join(__dirname, "..", "templates", "resumeTemplate.ejs"),
+    path.join(__dirname, "..", "templates", templateFileName),
     {
       personalInfo,
       education,
