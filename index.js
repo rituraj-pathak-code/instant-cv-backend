@@ -40,11 +40,8 @@ app.use(passport.session())
 
 
 
-// app.use('/',(authRoutes))
+app.use('/', authRoutes)
 
-app.get('/', (req,res)=> {
-  res.send({message: "CHECK OK"})
-})
 app.use('/api',isAuthenticated,resumeBuilderRoutes)
 
 
