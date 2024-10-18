@@ -16,7 +16,7 @@
     "puppeteer": "^23.5.0",
     "uuid": "^10.0.0"
   },
-  "name": "server",
+  "name": "instant-cv",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",

@@ -37,9 +37,7 @@ app.use(passport.session())
 
 
 // app.use('/',(authRoutes))
-// app.use('/', (req,res)=>{
-//   res.json({message:"Connected YOOO"})
-// })
+
 app.get('/', (req,res)=> {
   res.send({message: "CHECK OK"})
 })
