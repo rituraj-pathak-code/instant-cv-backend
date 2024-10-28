@@ -247,9 +247,10 @@ export const downloadResume = async (req, res) => {
       format: "A4",
       printBackground: true,
     });
-
+    console.log("pdfbuffer",pdfBuffer)
     await browser.close();
     const base64Pdf = pdfBuffer.toString('base64');
+    console.log("base",base64Pdf)
     res.send({
       pdf: base64Pdf,
       filename: `${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`
