@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@sparticuz/chromium": "^130.0.0",
     "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",
@@ -17,6 +18,7 @@
     "passport-local": "^1.0.0",
     "pdfkit": "^0.15.0",
     "puppeteer": "^23.5.0",
+    "puppeteer-core": "^23.6.1",
     "uuid": "^10.0.0"
   },
   "name": "instant-cv",

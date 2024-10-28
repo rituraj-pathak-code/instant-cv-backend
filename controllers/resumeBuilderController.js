@@ -3,6 +3,8 @@ import ejs from "ejs";
 import path from "path";
 import fs from "fs";
 import Resume from "../models/ResumeBuilderModal.js";
+import puppeteerCore from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 
 import { fileURLToPath } from "url";
@@ -23,10 +25,21 @@ export const postResume = async (req, res) => {
         skills,
       }
     );
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-    });
+    let browser;
+    if (process.env.NODE_ENV === 'development') {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      });
+    }
+    if (process.env.NODE_ENV === 'production') {
+      browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
+    }
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "domcontentloaded" });
     const imageBase64 = await page.screenshot({
@@ -138,10 +151,21 @@ export const updateResume = async (req, res) => {
         skills,
       }
     );
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-    });
+    let browser;
+    if (process.env.NODE_ENV === 'development') {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      });
+    }
+    if (process.env.NODE_ENV === 'production') {
+      browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
+    }
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "domcontentloaded" });
     const imageBase64 = await page.screenshot({
@@ -187,10 +211,21 @@ export const downloadResume = async (req, res) => {
       skills,
     }
   );
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-  });
+  let browser;
+    if (process.env.NODE_ENV === 'development') {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      });
+    }
+    if (process.env.NODE_ENV === 'production') {
+      browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
+    }
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: "domcontentloaded" });
   const pdfBuffer = await page.pdf({
