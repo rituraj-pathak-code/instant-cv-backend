@@ -249,7 +249,7 @@ export const downloadResume = async (req, res) => {
     });
     console.log("pdfbuffer",pdfBuffer)
     await browser.close();
-    const base64Pdf = pdfBuffer.toString('base64');
+    const base64Pdf = Buffer.from(pdfBuffer).toString('base64');
     console.log("base",base64Pdf)
     res.send({
       pdf: base64Pdf,
