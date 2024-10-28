@@ -235,23 +235,27 @@ export const downloadResume = async (req, res) => {
 
   await browser.close();
 
-  const filePath = `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`;
-  fs.writeFileSync(filePath, pdfBuffer);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename=${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`);
+  res.send(pdfBuffer);
 
-  res.download(filePath, (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      fs.unlink(
-        `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`,
-        (err) => {
-          if (err) {
-            console.error("Error deleting PDF file:", err);
-          } else {
-            console.log("PDF file deleted");
-          }
-        }
-      );
-    }
-  });
+  // const filePath = `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`;
+  // fs.writeFileSync(filePath, pdfBuffer);
+
+  // res.download(filePath, (err) => {
+  //   if (err) {
+  //     console.error(err);
+  //   } else {
+  //     fs.unlink(
+  //       `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`,
+  //       (err) => {
+  //         if (err) {
+  //           console.error("Error deleting PDF file:", err);
+  //         } else {
+  //           console.log("PDF file deleted");
+  //         }
+  //       }
+  //     );
+  //   }
+  // });
 };
