@@ -1,83 +1,76 @@
 import { Router } from "express";
-import passport from "passport";
 import User from "../models/UserModal.js";
+import jwt from "jsonwebtoken"
+import bcrypt, { compare } from "bcrypt"
+import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+
 
 const router = Router();
 
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.status(401);
-}
-
-router.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["email", "profile"],
-    prompt: "select_account",
-  })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/auth/google/failure",
-  }),
-  async (req, res) => {
-    try {
-      let existingUser = await User.findOne({ googleId: req.user.id });
-
-      if (!existingUser) {
-        const newUser = new User({
-          googleId: req.user.id,
-          displayName: req.user.displayName,
-          email: req.user.emails[0].value,
-          photo: req.user.photos[0].value,
-        });
-
-        await newUser.save();
-        req.session.user = newUser;
-      } else {
-        req.session.user = existingUser;
-      }
-
-      res.redirect("/auth/protected");
-    } catch (err) {
-      console.error("Error saving user:", err);
-      res.redirect("/auth/google/failure");
+router.post('/signup', async (req,res)=> {
+  try{
+    const {name,username,password} = req.body;
+    if(!name || !username || !password){
+      throw new Error("Please enter name, username & password")
     }
+    const hashedPassword = await bcrypt.hash(password,10);
+    const user = new User({
+      name:name,
+      username: username,
+      password: hashedPassword
+    })
+    await user.save();
+    res.status(201).send("User created successfully")
+  }catch(err){
+    res.status(400).send(err)
   }
-);
+})
 
-router.get("/auth/protected", isLoggedIn, (req, res) => {
-  res.redirect(`http://localhost:5173/`);
-});
-
-router.get("/auth/google/failure", (req, res) => {
-  res.send("Something went wrong");
-});
-router.get("/auth/google/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error destroying session:", err);
-      return res.status(500).send("Failed to log out");
+router.post('/login', async (req,res)=> {
+  try{
+    const {username,password} = req.body;
+    if(!username || !password){
+      throw new Error("Please enter username & password")
     }
-    res.clearCookie("connect.sid");
-    res.redirect("http://localhost:5173/login");
+    const user = await User.findOne({username:username});
+    if(!user){
+      throw new Error("Invalid Credentials")
+    }
+    const isPasswordValid = await bcrypt.compare(password,user.password)
+    if(!isPasswordValid){
+      throw new Error("Invalid Credentials")
+    }
+    const token = jwt.sign({_id:user._id},process.env.JWT_SECRET);
+    console.log(token)
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie will last for 7 day
+    });
+    res.send({_id:user._id,name:user.name,username:user.username})
+  }catch(err){
+    res.status(400).json({message: err.message})
+  }
+})
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
   });
+  res.json({ message: 'Logout successful' });
 });
 
-router.get("/api/user", async (req, res) => {
-  
-  try {
-    let user = await User.findOne({ _id: req.session.user._id });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-    } else {
-      res.status(200).json(user);
+
+router.post('/userData', isAuthenticated, async (req,res)=> {
+  try{
+    const {_id} = req.body;
+    const user = await User.findById({_id:_id});
+    if(!user){
+      throw new Error("User not found")
     }
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: "Something went wrong" });
+    res.send({_id:user._id,name:user.name,username:user.username})
+  }catch(err){
+    res.status(400).json({message: err.message})
   }
-});
+})
 
 export default router;

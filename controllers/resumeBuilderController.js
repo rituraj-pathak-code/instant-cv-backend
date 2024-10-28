@@ -11,7 +11,6 @@ const __dirname = path.dirname(__filename);
 export const postResume = async (req, res) => {
   const { templateId, personalInfo, education, experience, projects, skills } = req.body;
   try {
-
     const templateFileName = templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
     const html = await ejs.renderFile(
       path.join(__dirname, "..", "templates", templateFileName),
@@ -72,13 +71,13 @@ export const getAllResume = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit);
 
+
     const formattedResumes = resumes?.map((resume) => {
       return {
         ...resume?.toObject(),
         image: resume?.image ? resume?.image?.toString("base64") : null,
       };
     });
-
     res
       .status(200)
       .json({ data: formattedResumes, totalRecords: totalResumes, limit });
