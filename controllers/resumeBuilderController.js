@@ -52,7 +52,7 @@ export const postResume = async (req, res) => {
     const imageDataUri = `data:image/jpeg;base64,${imageBase64}`;
 
     const newResume = await Resume.insertMany({
-      user: req.session.user._id,
+      user: req.user._id,
       personalInfo,
       education,
       experience,
@@ -135,7 +135,7 @@ export const updateResume = async (req, res) => {
       return res.status(400).json({ message: "Resume id is required" });
     }
 
-    const resume = Resume.findOne({ _id: id, user: req.session.user._id });
+    const resume = Resume.findOne({ _id: id, user: req.user._id });
 
     if (!resume) {
       return res.send(404).json({ message: "Resume not found" });
@@ -179,7 +179,7 @@ export const updateResume = async (req, res) => {
 
     const editedResume = await Resume.findByIdAndUpdate(
       id,
-      { user: req.session.user._id, image: imageDataUri, ...req.body },
+      { user: req.user._id, image: imageDataUri, ...req.body },
       { new: true }
     );
 

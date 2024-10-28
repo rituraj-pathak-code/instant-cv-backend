@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 export const isAuthenticated = async (req, res, next) => {
     try{
       const {token} = req.cookies;
-      console.log("Token", token)
       if (!token) {
        return res.status(401).send("Invalid Token");
       }
@@ -16,6 +15,7 @@ export const isAuthenticated = async (req, res, next) => {
       if (!user) {
         throw new Error("User not found");
       }
+      req.user = user
       next();
     }catch(err){
       res.status(400).send("ERROR : "+err.message)
