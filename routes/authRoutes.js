@@ -41,9 +41,9 @@ router.post('/login', async (req,res)=> {
       throw new Error("Invalid Credentials")
     }
     const token = jwt.sign({_id:user._id},process.env.JWT_SECRET);
-    console.log(token)
     res.cookie('token', token, {
       httpOnly: true,
+      sameSite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie will last for 7 day
     });
     res.send({_id:user._id,name:user.name,username:user.username})
@@ -55,6 +55,7 @@ router.post('/login', async (req,res)=> {
 router.post('/logout', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
+    sameSite: 'None'
   });
   res.json({ message: 'Logout successful' });
 });
