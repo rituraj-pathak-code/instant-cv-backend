@@ -1,4 +1,4 @@
-import puppeteer, {executablePath} from "puppeteer";
+import puppeteer from "puppeteer";
 import ejs from "ejs";
 import path from "path";
 import fs from "fs";
@@ -25,7 +25,6 @@ export const postResume = async (req, res) => {
     );
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     });
     const page = await browser.newPage();
@@ -141,7 +140,6 @@ export const updateResume = async (req, res) => {
     );
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     });
     const page = await browser.newPage();
@@ -191,7 +189,6 @@ export const downloadResume = async (req, res) => {
   );
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: executablePath(),
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   });
   const page = await browser.newPage();
