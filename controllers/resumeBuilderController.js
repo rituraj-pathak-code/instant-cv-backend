@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import Resume from "../models/ResumeBuilderModal.js";
 
+
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +23,10 @@ export const postResume = async (req, res) => {
         skills,
       }
     );
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "domcontentloaded" });
     const imageBase64 = await page.screenshot({
@@ -134,7 +138,10 @@ export const updateResume = async (req, res) => {
         skills,
       }
     );
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "domcontentloaded" });
     const imageBase64 = await page.screenshot({
@@ -180,7 +187,10 @@ export const downloadResume = async (req, res) => {
       skills,
     }
   );
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  });
   const page = await browser.newPage();
   await page.setContent(html, { waitUntil: "domcontentloaded" });
   const pdfBuffer = await page.pdf({
