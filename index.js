@@ -32,5 +32,5 @@ app.use("/api", authRoutes);
 app.use("/api", isAuthenticated, resumeBuilderRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is listening at port ${PORT}`);
+  console.log(`Server is listening at port:  ${PORT}`);
 });
