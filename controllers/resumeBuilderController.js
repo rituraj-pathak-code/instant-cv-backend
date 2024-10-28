@@ -249,14 +249,11 @@ export const downloadResume = async (req, res) => {
     });
 
     await browser.close();
-
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`
-    );
-    console.log(pdfBuffer)
-    res.send(pdfBuffer);
+    const base64Pdf = pdfBuffer.toString('base64');
+    res.send({
+      pdf: base64Pdf,
+      filename: `${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`
+    });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res.status(500).send("Error generating PDF");
