@@ -3,18 +3,19 @@ import ejs from "ejs";
 import path from "path";
 import fs from "fs";
 import Resume from "../models/ResumeBuilderModal.js";
-import puppeteerCore from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
-
+import puppeteerCore from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const postResume = async (req, res) => {
-  const { templateId, personalInfo, education, experience, projects, skills } = req.body;
+  const { templateId, personalInfo, education, experience, projects, skills } =
+    req.body;
   try {
-    const templateFileName = templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
+    const templateFileName =
+      templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
     const html = await ejs.renderFile(
       path.join(__dirname, "..", "templates", templateFileName),
       {
@@ -26,13 +27,17 @@ export const postResume = async (req, res) => {
       }
     );
     let browser;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
       });
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       browser = await puppeteerCore.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
@@ -59,7 +64,7 @@ export const postResume = async (req, res) => {
       projects,
       skills,
       image: imageDataUri,
-      templateId
+      templateId,
     });
     if (!newResume) {
       return res.status(500).send({ message: "Something went Wrong." });
@@ -87,7 +92,6 @@ export const getAllResume = async (req, res) => {
     const resumes = await Resume.find({ user: userId })
       .skip((page - 1) * limit)
       .limit(limit);
-
 
     const formattedResumes = resumes?.map((resume) => {
       return {
@@ -152,13 +156,17 @@ export const updateResume = async (req, res) => {
       }
     );
     let browser;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
       });
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       browser = await puppeteerCore.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
@@ -197,28 +205,35 @@ export const updateResume = async (req, res) => {
 };
 
 export const downloadResume = async (req, res) => {
-  const { personalInfo, education, experience, projects, skills, templateId } = req.body;
+  const { personalInfo, education, experience, projects, skills, templateId } =
+    req.body;
 
-  const templateFileName = templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
+  const templateFileName =
+    templateId == 1 ? "resumeTemplate.ejs" : "resumeTemplateTwo.ejs";
 
-  const html = await ejs.renderFile(
-    path.join(__dirname, "..", "templates", templateFileName),
-    {
-      personalInfo,
-      education,
-      experience,
-      projects,
-      skills,
-    }
-  );
-  let browser;
-    if (process.env.NODE_ENV === 'development') {
+  try {
+    const html = await ejs.renderFile(
+      path.join(__dirname, "..", "templates", templateFileName),
+      {
+        personalInfo,
+        education,
+        experience,
+        projects,
+        skills,
+      }
+    );
+    let browser;
+    if (process.env.NODE_ENV === "development") {
       browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
       });
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       browser = await puppeteerCore.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
@@ -226,36 +241,24 @@ export const downloadResume = async (req, res) => {
         headless: chromium.headless,
       });
     }
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "domcontentloaded" });
-  const pdfBuffer = await page.pdf({
-    format: "A4",
-    printBackground: true,
-  });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+    });
 
-  await browser.close();
+    await browser.close();
 
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `attachment; filename=${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`);
-  res.send(pdfBuffer);
-
-  // const filePath = `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`;
-  // fs.writeFileSync(filePath, pdfBuffer);
-
-  // res.download(filePath, (err) => {
-  //   if (err) {
-  //     console.error(err);
-  //   } else {
-  //     fs.unlink(
-  //       `./templates/${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`,
-  //       (err) => {
-  //         if (err) {
-  //           console.error("Error deleting PDF file:", err);
-  //         } else {
-  //           console.log("PDF file deleted");
-  //         }
-  //       }
-  //     );
-  //   }
-  // });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${personalInfo.firstName}_${personalInfo.lastName}_Resume.pdf`
+    );
+    console.log(pdfBuffer)
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res.status(500).send("Error generating PDF");
+  }
 };
